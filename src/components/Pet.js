@@ -1,19 +1,25 @@
 import {useState} from "react"
 
-function Pet({pet, adoptPet}){
+function Pet({pet, adoptPet, updateLike}){
 
     const [favorite, setFavorite] = useState(false)
+    const [displayName, setDisplayName] = useState(true)
 
     function toggleFavorite(){
         setFavorite((favorite) => !favorite)
+    }
+    function toggleName() {
+        setDisplayName((displayName) => !displayName)
     }
     
     return (
         <li className="pet">
             <img src={pet.image} alt={pet.name} />
             <button onClick={toggleFavorite} className={favorite ? "favorite-button active" : "favorite-button"}>{favorite ? '★' : '☆'}</button>
-            <h4>{/* Write a ternary expression to display either the name or the type of animal for the pet here */}</h4>
-            <button className="likes-button">{/* Number of likes goes here */} likes</button>
+            <h4 onClick={toggleName}>{displayName? pet.name : pet.animal_type}</h4>
+            <button onClick={() => {
+                updateLike(pet)}} 
+                className="likes-button">{pet.likes} likes</button>
             <br/><br/>
             <button onClick={() => {
                 adoptPet(pet.id)

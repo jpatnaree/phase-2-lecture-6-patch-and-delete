@@ -27,6 +27,19 @@ function App() {
     setPets(pets.filter(pet => {
       return pet.id !== id
     }))
+
+    fetch(`http://localhost:4000/pets/${id}`, {
+      method: 'DELETE'
+    })
+    .then(resp => {
+      if (resp.ok) {
+        return resp.json()
+      }
+    })
+    .then(deletedPet => {
+      console.log(deletedPet)
+    })
+
   }
 
   function addPet(event){
@@ -48,10 +61,34 @@ function App() {
     setFormData({...formData, [event.target.name]: event.target.value})
   }
 
+  function updateLike(pet) {
+    console.log(pet.id)
+    fetch(`http://localhost:4000/pets/${pet.id}`, {
+      method: "PATCH",
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        likes: pet.likes +1
+      })
+    })
+    .then(resp => resp.json())
+    .then(updatedLikes => {
+      setPets(pets.map(p => {
+        if(updatedLikes.id === p.id) {
+          return updatedLikes
+        } else {
+          return p
+        }
+      }))
+    })
+  }
+
   return (
     <div className="app">
       <Header />
-      <PetPage pets={filteredPets} setSearchText={setSearchText} adoptPet={adoptPet} addPet={addPet} updateFormData={updateFormData} />
+      <PetPage pets={filteredPets} setSearchText={setSearchText} adoptPet={adoptPet} addPet={addPet} updateFormData={updateFormData} updateLike={updateLike} />
     </div>
   );
 }
